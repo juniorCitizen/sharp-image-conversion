@@ -1,6 +1,6 @@
 # Image Conversion Utility (sharp-image-conversion)
 
-Sharp.js wrapper for single image resize, manipulation and format conversion then output to file or buffer.
+[Sharp](https://github.com/lovell/sharp) wrapper for single image resize, manipulation and format conversion then output to file or buffer.
 
 ## Installation
 
@@ -55,7 +55,7 @@ const resizingOptions = {
 
 copy the file specified during instantiation using node.js stream after converting to the optionally specified image format with optionally appied image manipulation parameters
 
-note 1: refer to Sharp docs for supported image formats.
+note 1: refer to [Sharp docs](https://sharp.pixelplumbing.com/en/stable/) for supported image formats.
 
 note 2: specified _outputOptions_ are ignored if _targetFormat_ is undefined or null.
 
@@ -67,7 +67,7 @@ instance.streamCopy('targetPath', undefined, {
 })
 ```
 
-note 3: _outputOptions_ should match the _targetFormat_ according to Sharp's docs.
+note 3: _outputOptions_ should match the _targetFormat_ according to [Sharp docs](https://sharp.pixelplumbing.com/en/stable/).
 
 **Instance.toBuffer**(**_targetFormat?_** : _String_, **_outputOptions?_** : _Object_)
 
