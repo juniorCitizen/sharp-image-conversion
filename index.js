@@ -74,9 +74,10 @@ module.exports = class SharpImageConversion {
    * @returns {Buffer} Buffered image data.
    */
   toBuffer(targetFormat = undefined, outputOptions = {}) {
-    if (targetFormat) {
-      this._image.toFormat(targetFormat, outputOptions)
-    }
-    return this._image.toBuffer()
+    return !targetFormat
+      ? this._image.toBuffer()
+      : !outputOptions
+      ? this._image.toFormat(targetFormat).toBuffer()
+      : this._image.toFormat(targetFormat, outputOptions).toBuffer()
   }
 }
