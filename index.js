@@ -14,11 +14,9 @@ module.exports = class SharpImageConversion {
       source: path.resolve(sourceFilePath),
       target: undefined,
     }
-    this._resized = false
     this._image = sharp().rotate()
-    this._imageTransformer = undefined
     if (resizeOptions) {
-      this._imageTransformer
+      this._image
         .resize({
           width: resizeOptions.xLimit,
           height: resizeOptions.yLimit,
@@ -26,7 +24,6 @@ module.exports = class SharpImageConversion {
           background: {r: 0, g: 0, b: 0, alpha: 0},
         })
         .trim(1)
-      this._resized = true
     }
   }
 
@@ -47,7 +44,7 @@ module.exports = class SharpImageConversion {
       this._filePaths.target = path.resolve(targetFilePath)
       const fileDir = path.dirname(this._filePaths.target)
       if (targetFormat) {
-        this._imageTransformer.toFormat(targetFormat, outputOptions)
+        this._image.toFormat(targetFormat, outputOptions)
       }
       await fs.ensureDir(fileDir)
       const rs = fs.createReadStream(this._filePaths.source)
@@ -56,11 +53,7 @@ module.exports = class SharpImageConversion {
         rs.on('error', reject)
         ws.on('error', reject)
         ws.on('finish', resolve)
-        if (this._imageTransformer) {
-          rs.pipe(this._imageTransformer).pipe(ws)
-        } else {
-          rs.pipe(ws)
-        }
+        rs.pipe(this._image).pipe(ws)
       })
         .then(() => Promise.resolve())
         .catch(error => {
@@ -82,8 +75,8 @@ module.exports = class SharpImageConversion {
    */
   toBuffer(targetFormat = undefined, outputOptions = {}) {
     if (targetFormat) {
-      this._imageTransformer.toFormat(targetFormat, outputOptions)
+      this._image.toFormat(targetFormat, outputOptions)
     }
-    return this._imageTransformer.toBuffer()
+    return this._image.toBuffer()
   }
 }
