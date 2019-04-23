@@ -14,16 +14,19 @@ module.exports = class SharpImageConversion {
       source: path.resolve(sourceFilePath),
       target: undefined,
     }
-    this._image = sharp().rotate()
+    this._image = {
+      stream: sharp().rotate(),
+      buffer: sharp(this._filePaths.source).rotate(),
+    }
     if (resizeOptions) {
-      this._image
-        .resize({
-          width: resizeOptions.xLimit,
-          height: resizeOptions.yLimit,
-          fit: 'inside',
-          background: {r: 0, g: 0, b: 0, alpha: 0},
-        })
-        .trim(1)
+      const resizeOpts = {
+        width: resizeOptions.xLimit,
+        height: resizeOptions.yLimit,
+        fit: 'inside',
+        background: {r: 0, g: 0, b: 0, alpha: 0},
+      }
+      this._image.stream.resize(resizeOpts).trim(1)
+      this._image.buffer.resize(resizeOpts).trim(1)
     }
   }
 
@@ -44,7 +47,7 @@ module.exports = class SharpImageConversion {
       this._filePaths.target = path.resolve(targetFilePath)
       const fileDir = path.dirname(this._filePaths.target)
       if (targetFormat) {
-        this._image.toFormat(targetFormat, outputOptions)
+        this._image.stream.toFormat(targetFormat, outputOptions)
       }
       await fs.ensureDir(fileDir)
       const rs = fs.createReadStream(this._filePaths.source)
@@ -53,7 +56,7 @@ module.exports = class SharpImageConversion {
         rs.on('error', reject)
         ws.on('error', reject)
         ws.on('finish', resolve)
-        rs.pipe(this._image).pipe(ws)
+        rs.pipe(this._image.stream).pipe(ws)
       })
         .then(() => Promise.resolve())
         .catch(error => {
@@ -75,9 +78,9 @@ module.exports = class SharpImageConversion {
    */
   toBuffer(targetFormat = undefined, outputOptions = {}) {
     return !targetFormat
-      ? this._image.toBuffer()
+      ? this._image.buffer.toBuffer()
       : !outputOptions
-      ? this._image.toFormat(targetFormat).toBuffer()
-      : this._image.toFormat(targetFormat, outputOptions).toBuffer()
+      ? this._image.buffer.toFormat(targetFormat).toBuffer()
+      : this._image.buffer.toFormat(targetFormat, outputOptions).toBuffer()
   }
 }
