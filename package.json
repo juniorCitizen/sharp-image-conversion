@@ -1,6 +1,6 @@
 {
   "name": "sharp-image-conversion",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Sharp.js wrapper for single image resize, quality manipulation and format conversion and output to file or buffer",
   "main": "index.js",
   "scripts": {
