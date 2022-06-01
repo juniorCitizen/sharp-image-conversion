@@ -22,7 +22,7 @@
   "homepage": "https://github.com/juniorCitizen/sharp-image-conversion#readme",
   "dependencies": {
     "fs-extra": "^7.0.1",
-    "sharp": "^0.22.0"
+    "sharp": "^0.30.5"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
